@@ -1,44 +1,71 @@
 // ─────────────────────────────────────────────────────────
-//  Navbar Component
+//  Navbar Component — Auth-aware navigation bar
 // ─────────────────────────────────────────────────────────
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  // Log out and redirect to home
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
-    <nav className="bg-gray-900 text-white px-6 py-4 flex items-center justify-between">
-      {/* Logo / Brand */}
-      <Link to="/" className="text-xl font-bold text-purple-400 hover:text-purple-300">
+    <nav className="bg-gray-900 border-b border-gray-800 px-6 py-4 flex items-center justify-between">
+      {/* Brand / Logo */}
+      <Link
+        to="/"
+        className="text-xl font-bold text-purple-400 hover:text-purple-300 transition"
+      >
         🎥 Stream
       </Link>
 
-      {/* Navigation Links */}
+      {/* Right-side navigation */}
       <div className="flex items-center gap-4">
-        <Link to="/" className="hover:text-purple-300 transition">
+        <Link to="/" className="text-gray-300 hover:text-white transition">
           Home
         </Link>
 
         {user ? (
           <>
-            <span className="text-gray-400">Hi, {user.username}</span>
+            {/* Logged-in user info */}
+            <span className="text-gray-400 text-sm">
+              👤 {user.username}
+            </span>
+
+            {/* Go Live button */}
+            <Link
+              to="/go-live"
+              className="bg-red-600 hover:bg-red-500 text-white px-4 py-1.5 rounded-md text-sm font-medium transition"
+            >
+              🔴 Go Live
+            </Link>
+
+            {/* Logout button */}
             <button
-              onClick={logout}
-              className="bg-red-600 hover:bg-red-500 px-4 py-1.5 rounded text-sm transition"
+              onClick={handleLogout}
+              className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-1.5 rounded-md text-sm transition"
             >
               Logout
             </button>
           </>
         ) : (
           <>
-            <Link to="/login" className="hover:text-purple-300 transition">
+            {/* Guest links */}
+            <Link
+              to="/login"
+              className="text-gray-300 hover:text-white transition"
+            >
               Login
             </Link>
             <Link
               to="/register"
-              className="bg-purple-600 hover:bg-purple-500 px-4 py-1.5 rounded text-sm transition"
+              className="bg-purple-600 hover:bg-purple-500 text-white px-4 py-1.5 rounded-md text-sm font-medium transition"
             >
               Register
             </Link>
