@@ -14,7 +14,7 @@ const VideoPlayer = ({ streamKey }) => {
     if (!video || !streamKey) return;
 
     // HLS stream URL from the RTMP-to-HLS transcoder
-    const streamUrl = `http://localhost:8080/hls/${streamKey}.m3u8`;
+    const streamUrl = `http://20.244.26.164:8080/hls/${streamKey}.m3u8`;
 
     if (Hls.isSupported()) {
       // ── HLS.js supported (Chrome, Firefox, Edge, etc.) ──
