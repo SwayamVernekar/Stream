@@ -55,6 +55,17 @@ app.use("/api/stream", streamRoutes);
 io.on("connection", (socket) => {
   console.log(`Client connected: ${socket.id}`);
 
+  // Join a stream's chat room
+  socket.on("join-stream", (streamKey) => {
+    socket.join(streamKey);
+    console.log(`Socket ${socket.id} joined room: ${streamKey}`);
+  });
+
+  // Broadcast a chat message to everyone in the stream room
+  socket.on("chat-message", ({ streamKey, message, username }) => {
+    io.to(streamKey).emit("chat-message", { username, message });
+  });
+
   socket.on("disconnect", () => {
     console.log(`Client disconnected: ${socket.id}`);
   });
