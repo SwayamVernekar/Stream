@@ -48,7 +48,7 @@ const StreamPage = () => {
 
   useEffect(() => {
     // Connect to the backend socket server
-    const socket = io("http://localhost:5001");
+    const socket = io("http://20.244.26.164:5001");
     socketRef.current = socket;
 
     // Join the stream's chat room
