@@ -2,12 +2,13 @@
 //  Video Player — HLS.js powered live stream player
 // ─────────────────────────────────────────────────────────
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Hls from "hls.js";
 
 const VideoPlayer = ({ streamKey }) => {
   const videoRef = useRef(null);
   const hlsRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -27,6 +28,7 @@ const VideoPlayer = ({ streamKey }) => {
       hls.attachMedia(video);
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        setIsLoading(false);
         video.play().catch(() => {
           // Autoplay may be blocked — user will click play manually
         });
@@ -35,6 +37,7 @@ const VideoPlayer = ({ streamKey }) => {
       hls.on(Hls.Events.ERROR, (event, data) => {
         if (data.fatal) {
           console.error("HLS fatal error:", data.type, data.details);
+          setIsLoading(false);
         }
       });
 
@@ -43,6 +46,7 @@ const VideoPlayer = ({ streamKey }) => {
       // ── Native HLS support (Safari) ──
       video.src = streamUrl;
       video.addEventListener("loadedmetadata", () => {
+        setIsLoading(false);
         video.play().catch(() => {});
       });
     }
@@ -57,7 +61,20 @@ const VideoPlayer = ({ streamKey }) => {
   }, [streamKey]);
 
   return (
-    <div className="relative bg-black rounded-xl overflow-hidden aspect-video">
+    <div
+      className="relative rounded-2xl overflow-hidden aspect-video animate-glow"
+      style={{ background: "#08080d" }}
+    >
+      {/* Loading spinner overlay */}
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-10">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-10 h-10 border-3 border-purple-500 border-t-transparent rounded-full animate-spin" />
+            <span className="text-gray-400 text-sm">Connecting to stream...</span>
+          </div>
+        </div>
+      )}
+
       <video
         ref={videoRef}
         className="w-full h-full object-contain"
@@ -70,7 +87,7 @@ const VideoPlayer = ({ streamKey }) => {
       {/* Fallback message (shown if video fails to load) */}
       {!Hls.isSupported() &&
         !document.createElement("video").canPlayType("application/vnd.apple.mpegurl") && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
+          <div className="absolute inset-0 flex items-center justify-center bg-surface-50">
             <p className="text-gray-400 text-center px-4">
               Your browser does not support HLS playback.
               <br />

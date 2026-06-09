@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────
-//  Navbar Component — Auth-aware navigation bar
+//  Navbar Component — Frosted glass navigation bar
 // ─────────────────────────────────────────────────────────
 
 import { Link, useNavigate } from "react-router-dom";
@@ -15,41 +15,73 @@ const Navbar = () => {
     navigate("/");
   };
 
+  // Avatar: first letter of username
+  const avatarLetter = user?.username?.charAt(0).toUpperCase() || "?";
+
   return (
-    <nav className="bg-gray-900 border-b border-gray-800 px-6 py-4 flex items-center justify-between">
+    <nav className="sticky top-0 z-50 glass-strong px-6 py-3.5 flex items-center justify-between">
       {/* Brand / Logo */}
-      <Link
-        to="/"
-        className="text-xl font-bold text-purple-400 hover:text-purple-300 transition"
-      >
-        🎥 Stream
+      <Link to="/" className="flex items-center gap-2.5 group">
+        <div
+          className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-bold"
+          style={{
+            background: "linear-gradient(135deg, #7C3AED, #8B5CF6)",
+          }}
+        >
+          ▶
+        </div>
+        <span className="text-xl font-bold gradient-text tracking-tight">
+          Stream
+        </span>
       </Link>
 
       {/* Right-side navigation */}
-      <div className="flex items-center gap-4">
-        <Link to="/" className="text-gray-300 hover:text-white transition">
+      <div className="flex items-center gap-3">
+        <Link
+          to="/"
+          className="text-gray-400 hover:text-white text-sm font-medium px-3 py-1.5 rounded-lg
+                     hover:bg-white/5 transition-all duration-200"
+        >
           Home
         </Link>
 
         {user ? (
           <>
-            {/* Logged-in user info */}
-            <span className="text-gray-400 text-sm">
-              👤 {user.username}
-            </span>
+            {/* User avatar + name */}
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5">
+              <div
+                className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                style={{
+                  background: "linear-gradient(135deg, #7C3AED, #6D28D9)",
+                }}
+              >
+                {avatarLetter}
+              </div>
+              <span className="text-gray-300 text-sm font-medium">
+                {user.username}
+              </span>
+            </div>
 
             {/* Go Live button */}
             <Link
               to="/go-live"
-              className="bg-red-600 hover:bg-red-500 text-white px-4 py-1.5 rounded-md text-sm font-medium transition"
+              className="flex items-center gap-2 bg-red-600/90 hover:bg-red-500 text-white
+                         px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200
+                         hover:shadow-lg hover:shadow-red-500/20"
             >
-              🔴 Go Live
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-300 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white" />
+              </span>
+              Go Live
             </Link>
 
             {/* Logout button */}
             <button
               onClick={handleLogout}
-              className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-1.5 rounded-md text-sm transition"
+              className="text-gray-400 hover:text-white text-sm font-medium px-3 py-1.5 rounded-lg
+                         hover:bg-white/5 border border-transparent hover:border-white/10
+                         transition-all duration-200"
             >
               Logout
             </button>
@@ -59,13 +91,14 @@ const Navbar = () => {
             {/* Guest links */}
             <Link
               to="/login"
-              className="text-gray-300 hover:text-white transition"
+              className="text-gray-400 hover:text-white text-sm font-medium px-3 py-1.5 rounded-lg
+                         hover:bg-white/5 transition-all duration-200"
             >
               Login
             </Link>
             <Link
               to="/register"
-              className="bg-purple-600 hover:bg-purple-500 text-white px-4 py-1.5 rounded-md text-sm font-medium transition"
+              className="btn-gradient text-white px-5 py-2 rounded-lg text-sm font-semibold"
             >
               Register
             </Link>

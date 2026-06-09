@@ -33,34 +33,70 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
-      <div className="max-w-7xl mx-auto px-6 py-10">
-        {/* Page heading */}
-        <div className="mb-10">
-          <h1 className="text-3xl font-bold flex items-center gap-3">
-            <span className="text-red-500 animate-pulse">●</span>
-            Live Streams
-          </h1>
-          <p className="text-gray-500 mt-2 text-sm">
-            Watch what's happening right now
-          </p>
-        </div>
+    <div className="min-h-screen" style={{ background: "#0a0a0f" }}>
+      {/* ── Hero Section ──────────────────────────────── */}
+      <div className="relative overflow-hidden">
+        {/* Background gradient orbs */}
+        <div
+          className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full blur-3xl opacity-10 pointer-events-none"
+          style={{ background: "radial-gradient(circle, #7C3AED, transparent)" }}
+        />
+        <div
+          className="absolute top-10 right-1/4 w-[400px] h-[400px] rounded-full blur-3xl opacity-[0.06] pointer-events-none"
+          style={{ background: "radial-gradient(circle, #8B5CF6, transparent)" }}
+        />
 
+        <div className="max-w-7xl mx-auto px-6 pt-16 pb-12 relative">
+          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-4">
+            <span className="gradient-text">Watch Live</span>
+            <br />
+            <span className="text-white">Streams</span>
+          </h1>
+          <p className="text-gray-500 text-lg max-w-md mb-6">
+            Discover creators broadcasting right now. Jump into a stream and
+            join the conversation.
+          </p>
+
+          {/* Live counter */}
+          {!loading && (
+            <div className="inline-flex items-center gap-2 glass px-4 py-2 rounded-full animate-fade-in">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500" />
+              </span>
+              <span className="text-sm text-gray-300">
+                <span className="text-white font-semibold">
+                  {streams.length}
+                </span>{" "}
+                {streams.length === 1 ? "stream" : "streams"} live now
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── Content Area ──────────────────────────────── */}
+      <div className="max-w-7xl mx-auto px-6 pb-16">
         {/* Loading state */}
         {loading && (
           <div className="flex items-center justify-center py-32">
             <div className="flex flex-col items-center gap-4">
-              <div className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
-              <p className="text-gray-400 text-sm">Loading streams...</p>
+              <div className="w-10 h-10 border-3 border-purple-500 border-t-transparent rounded-full animate-spin" />
+              <p className="text-gray-500 text-sm">Discovering streams...</p>
             </div>
           </div>
         )}
 
         {/* No streams */}
         {!loading && streams.length === 0 && (
-          <div className="flex items-center justify-center py-32">
+          <div className="flex items-center justify-center py-32 animate-fade-in">
             <div className="text-center">
-              <div className="text-6xl mb-4 opacity-30">📡</div>
+              <div
+                className="w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center glass"
+                style={{ fontSize: "2rem" }}
+              >
+                📡
+              </div>
               <h2 className="text-xl font-semibold text-gray-300 mb-2">
                 No streams live right now
               </h2>
@@ -75,8 +111,8 @@ const Home = () => {
         {/* Streams grid */}
         {!loading && streams.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {streams.map((stream) => (
-              <StreamCard key={stream._id} stream={stream} />
+            {streams.map((stream, index) => (
+              <StreamCard key={stream._id} stream={stream} index={index} />
             ))}
           </div>
         )}

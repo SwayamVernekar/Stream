@@ -45,19 +45,35 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 w-full max-w-md shadow-2xl">
+    <div
+      className="min-h-screen flex items-center justify-center px-4 relative"
+      style={{ background: "#0a0a0f" }}
+    >
+      {/* Background gradient orbs */}
+      <div
+        className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-3xl opacity-[0.07] pointer-events-none"
+        style={{ background: "radial-gradient(circle, #7C3AED, transparent)" }}
+      />
+      <div
+        className="absolute bottom-1/4 right-1/3 w-[300px] h-[300px] rounded-full blur-3xl opacity-[0.05] pointer-events-none"
+        style={{ background: "radial-gradient(circle, #8B5CF6, transparent)" }}
+      />
+
+      <div className="glass-strong rounded-2xl p-8 w-full max-w-md relative animate-fade-in">
         {/* Heading */}
         <h1 className="text-3xl font-bold text-white text-center mb-2">
           Create Account
         </h1>
-        <p className="text-gray-400 text-center mb-8">
+        <p className="text-gray-500 text-center mb-8 text-sm">
           Join the streaming community
         </p>
 
         {/* Error message */}
         {error && (
-          <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg mb-6 text-sm text-center">
+          <div
+            className="bg-red-500/10 border border-red-500/20 text-red-400
+                        px-4 py-3 rounded-xl mb-6 text-sm text-center animate-slide-up"
+          >
             {error}
           </div>
         )}
@@ -66,7 +82,7 @@ const Register = () => {
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Username field */}
           <div>
-            <label className="block text-gray-300 text-sm font-medium mb-2">
+            <label className="block text-gray-400 text-sm font-medium mb-2">
               Username
             </label>
             <input
@@ -75,15 +91,14 @@ const Register = () => {
               onChange={(e) => setUsername(e.target.value)}
               placeholder="coolstreamer"
               required
-              className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-3
-                         placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1
-                         focus:ring-purple-500 transition"
+              className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3
+                         placeholder-gray-600 input-glow transition-all duration-200"
             />
           </div>
 
           {/* Email field */}
           <div>
-            <label className="block text-gray-300 text-sm font-medium mb-2">
+            <label className="block text-gray-400 text-sm font-medium mb-2">
               Email
             </label>
             <input
@@ -92,15 +107,14 @@ const Register = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               required
-              className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-3
-                         placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1
-                         focus:ring-purple-500 transition"
+              className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3
+                         placeholder-gray-600 input-glow transition-all duration-200"
             />
           </div>
 
           {/* Password field */}
           <div>
-            <label className="block text-gray-300 text-sm font-medium mb-2">
+            <label className="block text-gray-400 text-sm font-medium mb-2">
               Password
             </label>
             <input
@@ -109,9 +123,8 @@ const Register = () => {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-3
-                         placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1
-                         focus:ring-purple-500 transition"
+              className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3
+                         placeholder-gray-600 input-glow transition-all duration-200"
             />
           </div>
 
@@ -119,17 +132,27 @@ const Register = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-purple-600 hover:bg-purple-500 disabled:bg-purple-800 disabled:cursor-not-allowed
-                       text-white font-semibold py-3 rounded-lg transition"
+            className="w-full btn-gradient text-white font-semibold py-3 rounded-xl
+                       disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
-            {loading ? "Creating account..." : "Create Account"}
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Creating account...
+              </span>
+            ) : (
+              "Create Account"
+            )}
           </button>
         </form>
 
         {/* Link to login */}
-        <p className="text-gray-400 text-center mt-6 text-sm">
+        <p className="text-gray-500 text-center mt-6 text-sm">
           Already have an account?{" "}
-          <Link to="/login" className="text-purple-400 hover:text-purple-300 font-medium transition">
+          <Link
+            to="/login"
+            className="text-purple-400 hover:text-purple-300 font-medium transition-colors"
+          >
             Sign In
           </Link>
         </p>
