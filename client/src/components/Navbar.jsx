@@ -2,12 +2,18 @@
 //  Navbar Component — Frosted glass navigation bar
 // ─────────────────────────────────────────────────────────
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Hide navbar on landing page
+  if (location.pathname === "/") {
+    return null;
+  }
 
   // Log out and redirect to home
   const handleLogout = () => {
@@ -21,7 +27,7 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 glass-strong px-6 py-3.5 flex items-center justify-between">
       {/* Brand / Logo */}
-      <Link to="/" className="flex items-center gap-2.5 group">
+      <Link to="/home" className="flex items-center gap-2.5 group">
         <div
           className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-bold"
           style={{
