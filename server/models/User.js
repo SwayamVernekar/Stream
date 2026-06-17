@@ -19,10 +19,24 @@ const userSchema = new mongoose.Schema({
     unique: true,
   },
 
-  // Hashed password (bcrypt)
+  // Hashed password (bcrypt) — not required for Google OAuth users
   password: {
     type: String,
-    required: true,
+    required: false,
+  },
+
+  // Google OAuth subject ID (unique per Google account)
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
+
+  // How the user signed up
+  authProvider: {
+    type: String,
+    enum: ["local", "google"],
+    default: "local",
   },
 
   // Unique key used to authenticate an incoming stream (generated later)

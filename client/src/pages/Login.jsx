@@ -2,12 +2,16 @@
 //  Login Page — Authenticate existing user
 // ─────────────────────────────────────────────────────────
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import API from "../api/axios";
 import FloatingPaths from "../components/FloatingPaths";
 import { motion } from "framer-motion";
+import googleLogo from "../assets/google-logo.png";
+
+const GOOGLE_CLIENT_ID =
+  "82172498205-a0gbguk5imae3plgcce1tn1evbe8u9ar.apps.googleusercontent.com";
 
 const Login = () => {
   const { login } = useAuth();
@@ -18,6 +22,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -39,6 +44,48 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+  // Handle Google Sign-In
+  const handleGoogleSignIn = useCallback(() => {
+    setError("");
+    setGoogleLoading(true);
+
+    try {
+      /* global google */
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: async (response) => {
+          try {
+            const { data } = await API.post("/auth/google", {
+              credential: response.credential,
+            });
+
+            login(data.token, data.user);
+            navigate("/home");
+          } catch (err) {
+            setError(
+              err.response?.data?.message || "Google sign-in failed. Please try again."
+            );
+          } finally {
+            setGoogleLoading(false);
+          }
+        },
+      });
+
+      google.accounts.id.prompt((notification) => {
+        if (
+          notification.isNotDisplayed() ||
+          notification.isSkippedMoment() ||
+          notification.isDismissedMoment()
+        ) {
+          setGoogleLoading(false);
+        }
+      });
+    } catch {
+      setError("Google sign-in is not available. Please try again later.");
+      setGoogleLoading(false);
+    }
+  }, [login, navigate]);
 
   return (
     <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden bg-[#0a0a0f]">
@@ -89,7 +136,7 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               required
-              className="w-full bg-white/5 border border-white/10 focus:border-purple-500/50 focus:bg-white/10 focus:ring-2 focus:ring-purple-500/20 text-white rounded-xl px-4 py-3 placeholder-neutral-600 transition-all duration-200 outline-none"
+              className="w-full bg-white/5 border border-white/10 focus:border-white/30 focus:bg-white/10 focus:ring-2 focus:ring-white/10 text-white rounded-xl px-4 py-3 placeholder-neutral-600 transition-all duration-200 outline-none"
             />
           </div>
 
@@ -104,13 +151,13 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              className="w-full bg-white/5 border border-white/10 focus:border-purple-500/50 focus:bg-white/10 focus:ring-2 focus:ring-purple-500/20 text-white rounded-xl px-4 py-3 placeholder-neutral-600 transition-all duration-200 outline-none"
+              className="w-full bg-white/5 border border-white/10 focus:border-white/30 focus:bg-white/10 focus:ring-2 focus:ring-white/10 text-white rounded-xl px-4 py-3 placeholder-neutral-600 transition-all duration-200 outline-none"
             />
           </div>
 
           {/* Submit button with animated border */}
           <div className="group relative p-px rounded-xl overflow-hidden transition-shadow duration-300 w-full mt-4">
-            <div className="absolute inset-[-1000%] opacity-0 group-hover:opacity-100 group-hover:animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,transparent_75%,#a855f7_100%)] transition-opacity duration-500" />
+            <div className="absolute inset-[-1000%] opacity-0 group-hover:opacity-100 group-hover:animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,transparent_75%,#ffffff_100%)] transition-opacity duration-500" />
             <button
               type="submit"
               disabled={loading}
@@ -129,6 +176,35 @@ const Login = () => {
             </button>
           </div>
         </form>
+
+        {/* ── Divider ──────────────────────────────── */}
+        <div className="flex items-center gap-4 my-6">
+          <div className="flex-1 h-px bg-white/10" />
+          <span className="text-neutral-500 text-xs font-medium uppercase tracking-wider">or</span>
+          <div className="flex-1 h-px bg-white/10" />
+        </div>
+
+        {/* ── Google Sign-In Button ────────────────── */}
+        <button
+          type="button"
+          onClick={handleGoogleSignIn}
+          disabled={googleLoading}
+          className="w-full flex items-center justify-center gap-3 bg-white/5 border border-white/10
+                     hover:bg-white/10 hover:border-white/20 text-white font-semibold py-3 rounded-xl
+                     transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {googleLoading ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              Signing in...
+            </>
+          ) : (
+            <>
+              <img src={googleLogo} alt="Google" className="w-5 h-5" />
+              Google Sign In
+            </>
+          )}
+        </button>
 
         {/* Link to register */}
         <p className="text-neutral-500 text-center mt-6 text-sm">

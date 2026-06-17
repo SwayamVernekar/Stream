@@ -80,7 +80,7 @@ const Landing = () => {
         >
           {/* Start Streaming (Transparent Glass with Hover Effect) */}
           <div className="inline-block group relative p-px rounded-2xl overflow-hidden transition-shadow duration-300">
-            <div className="absolute inset-[-1000%] opacity-0 group-hover:opacity-100 group-hover:animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,transparent_75%,#a855f7_100%)] transition-opacity duration-500" />
+            <div className="absolute inset-[-1000%] opacity-0 group-hover:opacity-100 group-hover:animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,transparent_75%,#ffffff_100%)] transition-opacity duration-500" />
             
             <Link
               to="/register"
@@ -94,7 +94,7 @@ const Landing = () => {
 
           {/* Watch Live (Transparent Glass with Hover Effect) */}
           <div className="inline-block group relative p-px rounded-2xl overflow-hidden transition-shadow duration-300">
-            <div className="absolute inset-[-1000%] opacity-0 group-hover:opacity-100 group-hover:animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,transparent_75%,#a855f7_100%)] transition-opacity duration-500" />
+            <div className="absolute inset-[-1000%] opacity-0 group-hover:opacity-100 group-hover:animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,transparent_75%,#ffffff_100%)] transition-opacity duration-500" />
             
             <Link
               to="/home"

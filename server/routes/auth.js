@@ -6,6 +6,7 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
+const { OAuth2Client } = require("google-auth-library");
 
 const User = require("../models/User");
 const protect = require("../middleware/auth");
@@ -141,6 +142,89 @@ router.get("/me", protect, async (req, res) => {
   } catch (error) {
     console.error("Get current user error:", error.message);
     res.status(500).json({ message: "Server error" });
+  }
+});
+
+// ─────────────────────────────────────────────────────────
+//  POST /api/auth/google
+//  Authenticate or register via Google OAuth
+// ─────────────────────────────────────────────────────────
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+router.post("/google", async (req, res) => {
+  try {
+    const { credential } = req.body;
+
+    if (!credential) {
+      return res.status(400).json({ message: "Google credential is required" });
+    }
+
+    // --- Verify the Google ID token ---
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const { sub: googleId, email, name } = payload;
+
+    // --- Look for an existing user by googleId or email ---
+    let user = await User.findOne({
+      $or: [{ googleId }, { email }],
+    });
+
+    if (user) {
+      // If the user signed up with email/password but is now using Google,
+      // link their Google account
+      if (!user.googleId) {
+        user.googleId = googleId;
+        await user.save();
+      }
+    } else {
+      // --- Create a new user ---
+
+      // Derive a unique username from the email prefix or name
+      let baseUsername = (email.split("@")[0] || name || "user").replace(
+        /[^a-zA-Z0-9_]/g,
+        ""
+      );
+      let username = baseUsername;
+      let suffix = 1;
+
+      while (await User.findOne({ username })) {
+        username = `${baseUsername}${suffix}`;
+        suffix++;
+      }
+
+      const streamKey = `sk-${uuidv4()}`;
+
+      user = await User.create({
+        username,
+        email,
+        googleId,
+        authProvider: "google",
+        streamKey,
+      });
+    }
+
+    // --- Respond with token + user (exclude password) ---
+    const token = generateToken(user._id);
+
+    res.json({
+      token,
+      user: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        streamKey: user.streamKey,
+        isLive: user.isLive,
+        createdAt: user.createdAt,
+      },
+    });
+  } catch (error) {
+    console.error("Google auth error:", error.message);
+    res.status(401).json({ message: "Invalid Google credential" });
   }
 });
 
