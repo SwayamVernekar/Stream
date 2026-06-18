@@ -6,8 +6,9 @@ import { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import API from "../api/axios";
-import FloatingPaths from "../components/FloatingPaths";
+import { CanvasRevealEffect } from "../components/CanvasRevealEffect";
 import { motion } from "framer-motion";
+import { HoverButton } from "@/components/ui/hover-button";
 import googleLogo from "../assets/google-logo.png";
 
 const GOOGLE_CLIENT_ID =
@@ -94,15 +95,16 @@ const Register = () => {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden bg-[#0a0a0f]">
-      {/* Background Animated Paths */}
-      <FloatingPaths position={1} />
-      <FloatingPaths position={-1} />
-
-      {/* Subtle radial glow behind the form */}
-      <div
-        className="absolute w-[800px] h-[800px] rounded-full blur-3xl opacity-[0.04] pointer-events-none"
-        style={{ background: "radial-gradient(circle, #7C3AED, transparent)" }}
-      />
+      {/* WebGL Dot-Matrix Background */}
+      <div className="absolute inset-0 z-0">
+        <CanvasRevealEffect
+          animationSpeed={3}
+          containerClassName="bg-black"
+          colors={[[255, 255, 255]]}
+          dotSize={6}
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(0,0,0,1)_0%,_transparent_100%)]" />
+      </div>
 
       <motion.div 
         className="relative z-10 w-full max-w-md bg-white/5 backdrop-blur-2xl border border-white/10 rounded-2xl p-8 shadow-2xl"
@@ -175,13 +177,12 @@ const Register = () => {
             />
           </div>
 
-          {/* Submit button with animated border */}
-          <div className="group relative p-px rounded-xl overflow-hidden transition-shadow duration-300 w-full mt-4">
-            <div className="absolute inset-[-1000%] opacity-0 group-hover:opacity-100 group-hover:animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,transparent_75%,#ffffff_100%)] transition-opacity duration-500" />
-            <button
+          {/* Submit button */}
+          <div className="mt-4">
+            <HoverButton
               type="submit"
               disabled={loading}
-              className="relative w-full rounded-[0.7rem] bg-[#0a0a0f]/80 backdrop-blur-md text-white font-semibold py-3 transition-all duration-300 hover:bg-[#0a0a0f]/90 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full rounded-xl py-3 font-semibold"
             >
               <span className="relative z-10 flex items-center justify-center gap-2">
                 {loading ? (
@@ -193,7 +194,7 @@ const Register = () => {
                   "Create Account"
                 )}
               </span>
-            </button>
+            </HoverButton>
           </div>
         </form>
 
@@ -205,26 +206,26 @@ const Register = () => {
         </div>
 
         {/* ── Google Sign-Up Button ────────────────── */}
-        <button
+        <HoverButton
           type="button"
           onClick={handleGoogleSignUp}
           disabled={googleLoading}
-          className="w-full flex items-center justify-center gap-3 bg-white/5 border border-white/10
-                     hover:bg-white/10 hover:border-white/20 text-white font-semibold py-3 rounded-xl
-                     transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full rounded-xl py-3 font-semibold"
         >
-          {googleLoading ? (
-            <>
-              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              Signing up...
-            </>
-          ) : (
-            <>
-              <img src={googleLogo} alt="Google" className="w-5 h-5" />
-              Google Sign Up
-            </>
-          )}
-        </button>
+          <span className="relative z-10 flex items-center justify-center gap-3">
+            {googleLoading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Signing up...
+              </>
+            ) : (
+              <>
+                <img src={googleLogo} alt="Google" className="w-5 h-5" />
+                Google Sign Up
+              </>
+            )}
+          </span>
+        </HoverButton>
 
         {/* Link to login */}
         <p className="text-neutral-500 text-center mt-6 text-sm">

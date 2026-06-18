@@ -2,10 +2,11 @@
 //  Landing Page — Full-screen hero with floating paths
 // ─────────────────────────────────────────────────────────
 
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 import FloatingPaths from "../components/FloatingPaths";
+import { HoverButton } from "@/components/ui/hover-button";
 
 // ── Landing Page ─────────────────────────────────────────
 
@@ -13,6 +14,7 @@ const HEADLINE = "Terminal";
 
 const Landing = () => {
   const letters = HEADLINE.split("");
+  const navigate = useNavigate();
 
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden bg-[#0a0a0f]">
@@ -78,33 +80,19 @@ const Landing = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.8, duration: 0.8 }}
         >
-          {/* Start Streaming (Transparent Glass with Hover Effect) */}
-          <div className="inline-block group relative p-px rounded-2xl overflow-hidden transition-shadow duration-300">
-            <div className="absolute inset-[-1000%] opacity-0 group-hover:opacity-100 group-hover:animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,transparent_75%,#ffffff_100%)] transition-opacity duration-500" />
-            
-            <Link
-              to="/register"
-              className="relative flex items-center justify-center rounded-[1.15rem] px-8 py-5 text-base font-semibold bg-[#0a0a0f]/60 backdrop-blur-md text-white transition-all duration-300 hover:bg-[#0a0a0f]/80"
-            >
-              <span className="opacity-90 group-hover:opacity-100 transition-opacity relative z-10">
-                Start Streaming
-              </span>
-            </Link>
-          </div>
+          <HoverButton
+            onClick={() => navigate("/register")}
+            className="px-10 py-4 text-base font-semibold"
+          >
+            Start Streaming
+          </HoverButton>
 
-          {/* Watch Live (Transparent Glass with Hover Effect) */}
-          <div className="inline-block group relative p-px rounded-2xl overflow-hidden transition-shadow duration-300">
-            <div className="absolute inset-[-1000%] opacity-0 group-hover:opacity-100 group-hover:animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,transparent_75%,#ffffff_100%)] transition-opacity duration-500" />
-            
-            <Link
-              to="/home"
-              className="relative flex items-center justify-center rounded-[1.15rem] px-8 py-5 text-base font-semibold bg-[#0a0a0f]/60 backdrop-blur-md text-white transition-all duration-300 hover:bg-[#0a0a0f]/80"
-            >
-              <span className="opacity-90 group-hover:opacity-100 transition-opacity relative z-10">
-                Watch Live
-              </span>
-            </Link>
-          </div>
+          <HoverButton
+            onClick={() => navigate("/home")}
+            className="px-10 py-4 text-base font-semibold"
+          >
+            Watch Live
+          </HoverButton>
         </motion.div>
       </div>
     </section>
