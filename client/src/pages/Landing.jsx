@@ -3,6 +3,7 @@
 // ─────────────────────────────────────────────────────────
 
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { motion } from "framer-motion";
 
 import FloatingPaths from "../components/FloatingPaths";
@@ -15,6 +16,7 @@ const HEADLINE = "Terminal";
 const Landing = () => {
   const letters = HEADLINE.split("");
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden bg-[#0a0a0f]">
@@ -81,7 +83,7 @@ const Landing = () => {
           transition={{ delay: 1.8, duration: 0.8 }}
         >
           <HoverButton
-            onClick={() => navigate("/register")}
+            onClick={() => navigate(user ? "/home" : "/register")}
             className="px-10 py-4 text-base font-semibold"
           >
             Start Streaming
