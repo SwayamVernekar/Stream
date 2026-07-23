@@ -1,119 +1,84 @@
 // ─────────────────────────────────────────────────────────
-//  Stream Card — Glassmorphism live stream preview card
+//  Stream Card — YouTube-style flat layout
 // ─────────────────────────────────────────────────────────
 
 import { useNavigate } from "react-router-dom";
+import { Eye } from "lucide-react";
 
-// Gradient palette for thumbnail banners — cycles per card
-const GRADIENTS = [
-  "linear-gradient(135deg, #4c1d95, #1e1b4b, #312e81)",
-  "linear-gradient(135deg, #581c87, #1e1b4b, #1e3a5f)",
-  "linear-gradient(135deg, #3b0764, #1e1b4b, #164e63)",
-  "linear-gradient(135deg, #4a1d96, #1a1a2e, #0f3460)",
-  "linear-gradient(135deg, #5b21b6, #1e1b4b, #1e293b)",
-  "linear-gradient(135deg, #6d28d9, #1a1a2e, #1e3a5f)",
-];
-
-const StreamCard = ({ stream, index = 0 }) => {
+const StreamCard = ({ stream }) => {
   const navigate = useNavigate();
 
-  // Extract streamer username from populated userId
   const username = stream.userId?.username || "Unknown";
   const avatarLetter = username.charAt(0).toUpperCase();
-  const gradient = GRADIENTS[index % GRADIENTS.length];
 
   return (
     <div
       onClick={() => navigate(`/stream/${stream.streamKey}`)}
-      className="glass rounded-2xl overflow-hidden cursor-pointer
-                 transform hover:-translate-y-1.5
-                 transition-all duration-300 group animate-fade-in"
-      style={{
-        "--hover-glow": "0 8px 40px rgba(124, 58, 237, 0.15)",
-      }}
-      onMouseEnter={(e) =>
-        (e.currentTarget.style.boxShadow =
-          "0 8px 40px rgba(124, 58, 237, 0.15)")
-      }
-      onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
+      className="group cursor-pointer"
     >
-      {/* Thumbnail / Banner area */}
+      {/* Thumbnail */}
       <div
-        className="relative aspect-video flex items-center justify-center overflow-hidden"
-        style={{ background: gradient }}
+        className="aspect-video overflow-hidden rounded-xl relative transition-all duration-300
+                   transition-shadow duration-300
+                   group-hover:shadow-[0_0_50px_8px_rgba(255,255,255,0.25)]"
       >
-        {/* Decorative orb */}
-        <div
-          className="absolute w-32 h-32 rounded-full opacity-20 blur-2xl
-                      group-hover:opacity-30 transition-opacity duration-500"
-          style={{ background: "radial-gradient(circle, #8B5CF6, transparent)" }}
-        />
+        {stream.thumbnail ? (
+          <img
+            src={stream.thumbnail}
+            alt={stream.title}
+            className="w-full h-full object-cover transition-transform duration-300 ease-out
+                       group-hover:scale-105"
+          />
+        ) : (
+          <div className="w-full h-full bg-white/[0.04] transition-transform duration-300 ease-out
+                          group-hover:scale-110" />
+        )}
 
-        {/* Stream icon */}
-        <div className="text-5xl opacity-20 group-hover:opacity-40 group-hover:scale-110 transition-all duration-500">
-          📺
-        </div>
-
-        {/* LIVE badge */}
+        {/* LIVE badge — bottom right */}
         <span
-          className="absolute top-3 left-3 flex items-center gap-1.5
-                      bg-red-600/90 backdrop-blur-sm text-white text-xs font-bold
-                      px-2.5 py-1 rounded-md shadow-lg shadow-red-500/20"
+          className="absolute bottom-2 right-2 flex items-center gap-1.5
+                      bg-red-600 text-white text-[10px] font-bold uppercase tracking-wider
+                      px-2 py-0.5 rounded"
         >
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-300 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white" />
           </span>
           LIVE
         </span>
 
-        {/* Viewer count badge */}
+        {/* Viewer count — bottom left */}
         <span
-          className="absolute top-3 right-3 flex items-center gap-1.5
-                      bg-black/50 backdrop-blur-sm text-gray-200 text-xs
-                      px-2.5 py-1 rounded-md"
+          className="absolute bottom-2 left-2 flex items-center gap-1
+                      bg-black/70 text-white text-[11px]
+                      px-2 py-0.5 rounded"
         >
-          <svg
-            className="w-3.5 h-3.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-            />
-          </svg>
+          <Eye className="w-3 h-3" />
           {stream.viewerCount || 0}
         </span>
       </div>
 
-      {/* Card body */}
-      <div className="p-4">
-        {/* Stream title */}
-        <h3 className="text-white font-semibold text-base truncate group-hover:text-purple-300 transition-colors duration-200">
-          {stream.title}
-        </h3>
+      {/* Info row */}
+      <div className="flex gap-3 mt-3">
+        {/* Avatar */}
+        <div
+          className="w-9 h-9 rounded-full flex items-center justify-center
+                     bg-white/10 border border-white/10 text-white text-sm
+                     font-semibold flex-shrink-0 transition-colors duration-300
+                     group-hover:border-white"
+        >
+          {avatarLetter}
+        </div>
 
-        {/* Streamer info */}
-        <div className="flex items-center gap-2 mt-2.5">
-          <div
-            className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
-            style={{
-              background: "linear-gradient(135deg, #7C3AED, #6D28D9)",
-            }}
-          >
-            {avatarLetter}
-          </div>
-          <span className="text-gray-400 text-sm truncate">{username}</span>
+        {/* Title + username */}
+        <div className="min-w-0 flex-1">
+          <h3 className="text-white font-medium text-[15px] leading-snug line-clamp-2
+                         transition-colors duration-300 group-hover:text-neutral-200">
+            {stream.title}
+          </h3>
+          <p className="text-neutral-400 text-sm mt-0.5">
+            {username}
+          </p>
         </div>
       </div>
     </div>

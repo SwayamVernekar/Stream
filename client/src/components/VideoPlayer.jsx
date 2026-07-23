@@ -36,7 +36,7 @@ const VideoPlayer = ({ streamKey }) => {
 
       hls.on(Hls.Events.ERROR, (event, data) => {
         if (data.fatal) {
-          console.error("HLS fatal error:", data.type, data.details);
+          // Suppress the console error as this naturally happens when the stream hasn't started yet
           setIsLoading(false);
         }
       });

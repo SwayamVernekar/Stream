@@ -46,8 +46,8 @@ const StreamPage = () => {
         const { data } = await API.get(`/stream/${streamKey}`);
         setStream(data.stream);
         setIsLive(data.stream.isLive);
-      } catch (err) {
-        console.error("Failed to fetch stream:", err.message);
+      } catch {
+        // Stream not found or offline — handled by UI below
         setStream(null);
         setIsLive(false);
       } finally {

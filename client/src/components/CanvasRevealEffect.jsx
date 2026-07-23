@@ -105,11 +105,12 @@ const DotMatrix = ({
 const ShaderMaterial = ({ source, uniforms }) => {
   const { size } = useThree();
   const ref = useRef(null);
+  const timeRef = useRef(0);
 
-  useFrame(({ clock }) => {
+  useFrame((_state, delta) => {
     if (!ref.current) return;
-    const timestamp = clock.getElapsedTime();
-    ref.current.material.uniforms.u_time.value = timestamp;
+    timeRef.current += delta;
+    ref.current.material.uniforms.u_time.value = timeRef.current;
   });
 
   const getUniforms = () => {
